@@ -80,15 +80,15 @@ check.dependsOn jacocoTestCoverageVerification
 
 springBoot  {
     buildInfo {
-		properties {
-			additional = [
-				'title': 'MINI AUTORIZADOR',
+        properties {
+            additional = [
+                'title': 'MINI AUTORIZADOR',
                 'author': 'Ednardo Rubens',
                 'github': 'https://github.com/ednardorubens',
-				'description': 'Fachada de autorização de transações da VR'
-			]
-		}
-	}
+                'description': 'Fachada de autorização de transações da VR'
+            ]
+        }
+    }
 }
 
 tasks.register('bootRunDev') {
