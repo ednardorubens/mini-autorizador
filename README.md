@@ -1,14 +1,38 @@
 # MINI AUTORIZADOR
 Projeto desenvolvido utilizando:
-* Java 11
-* Spring Boot
-* MapStruct
-* Lombok
-* Docker
-* MySQL
+- **[Spring Boot](https://spring.io/projects/spring-boot)**
+- **[Spring Data JPA](https://spring.io/projects/spring-data-jpa#overview)**
+- **[MapStruct](https://mapstruct.org/documentation/stable/reference/html/)**
+- **[Hibernate](https://hibernate.org/orm/)**
+- **[Lombok](https://projectlombok.org/)**
+- **[Docker](https://www.docker.com/)**
+- **[MySQL](https://www.mysql.com/)**
+- **[JaCoCo](https://www.eclemma.org/jacoco/)**
+- **[JUnit5](https://junit.org/junit5/docs/current/user-guide/)**
 
-# Swagger
-http://localhost:8080/swagger-ui.html#/
+# Requisitos para executar o projeto
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/)
+- [JDK 11+](https://www.oracle.com/br/java/technologies/javase/jdk11-archive-downloads.html)
+
+# Como executar o projeto
+- Clone o projeto.
+```bash
+  git clone https://github.com/ednardorubens/mini-autorizador.git
+```
+- Entre na pasta do projeto.
+```bash
+  cd mini-autorizador
+```
+- Execute o comando abaixo para compilar o projeto.
+```bash
+  ./gradlew clean build
+```
+- Execute o comando abaixo para iniciar o banco de dados Mysql no docker e subir o projeto.
+```bash
+  ./gradlew bootRunDev
+```
+- Acesse o swagger do projeto em http://localhost:8080/swagger-ui.html.
 
 
 # Teste de programação - VR Benefícios
