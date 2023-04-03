@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.10'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '2.7.8'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'com.avast.gradle.docker-compose' version '0.16.12'
     id 'com.gorylenko.gradle-git-properties' version '2.4.1'
     id 'java'
@@ -45,16 +45,13 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
     testImplementation ('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'junit', module: 'junit'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.h2database:h2:2.1.214'
 
     testCompileOnly 'org.projectlombok:lombok'
@@ -108,12 +105,8 @@ jacoco {
     toolVersion = '0.8.7'
     ext {
         exclude = [
-            '**/exception/**',
+            '**/core/**',
             '**/config/**',
-            '**/enumerator/**',
-            '**/dto/**',
-            '**/vo/**',
-            '**/model/**',
             '**/AuthorizationApplication*'
         ]
     }
