@@ -5,9 +5,11 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 
 @Configuration
+@Profile("!test")
 public class OpenApiConfig {
 
     private static final OpenAPI OPEN_API = new OpenAPI();
