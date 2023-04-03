@@ -1,0 +1,170 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.10'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.avast.gradle.docker-compose' version '0.16.12'
+    id 'com.gorylenko.gradle-git-properties' version '2.4.1'
+    id 'java'
+    id 'jacoco'
+}
+
+group = 'br.com.vr'
+version = '1.0.0'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    mapstructVersion = '1.5.2.Final'
+    mapstructBindingVersion = '0.2.0'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    runtimeOnly 'mysql:mysql-connector-java:8.0.32'
+
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
+    testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.h2database:h2:2.1.214'
+
+    testCompileOnly 'org.projectlombok:lombok'
+
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
+}
+
+sourceSets {
+    generated {
+        java.srcDir "${buildDir}/generated/sources/annotationProcessor/java/main"
+    }
+}
+
+compileJava {
+    source += sourceSets.generated.java
+}
+
+dockerCompose {
+    isRequiredBy(tasks.bootRun)
+    useComposeFiles.add("docker/docker-compose.yml")
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
+springBoot  {
+    buildInfo {
+		properties {
+			additional = [
+				'title': 'MINI AUTORIZADOR',
+                'author': 'Ednardo Rubens',
+                'github': 'https://github.com/ednardorubens',
+				'description': 'Fachada de autorização de transações da VR'
+			]
+		}
+	}
+}
+
+tasks.register('bootRunDev') {
+   dependsOn 'bootRun'
+   bootRun.systemProperty('spring.profiles.active', 'dev')
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = '0.8.7'
+    ext {
+        exclude = [
+            '**/exception/**',
+            '**/config/**',
+            '**/enumerator/**',
+            '**/dto/**',
+            '**/vo/**',
+            '**/model/**',
+            '**/AuthorizationApplication*'
+        ]
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.required
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacoco.exclude)
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacoco.exclude)
+        }))
+    }
+    violationRules {
+        rule {
+            element = 'PACKAGE'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+            limit {
+                counter = 'CLASS'
+                value = 'MISSEDCOUNT'
+                minimum = 0
+            }
+            limit {
+                counter = 'COMPLEXITY'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+        }
+    }
+}
